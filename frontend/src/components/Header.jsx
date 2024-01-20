@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react'
 import { FaBars, FaShoppingCart, FaUser, FaCaretDown } from 'react-icons/fa'
-import { Link, NavLink } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import ItemNav from './UI/ItemNav'
+import ItemList from './UI/ItemList'
+import { useSelector } from 'react-redux'
 
 const Header = () => {
-  const [isShow, setIsShow] = useState(false)
+  const { userInfo } = useSelector(store => store.auth)
+  const [isShow, setIsShow] = useState(true)
   const [showNavUser, setShowNavUser] = useState(false)
   const [showNavAdmin, setShowNavAdmin] = useState(false)
-  const isLogin = false
 
   const buttonNavUserHandler = e => {
     e.stopPropagation()
@@ -84,60 +87,26 @@ const Header = () => {
               </button>
             </div>
 
-            <NavLink
-              to="/cart"
-              className={({ isActive }) =>
-                `flex items-center gap-1 text-slate-400 ${
-                  isActive && 'text-slate-50'
-                }`
-              }
-            >
-              <FaShoppingCart />
-              Cart
-            </NavLink>
+            <ItemNav to="/cart"><FaShoppingCart /> Cart</ItemNav>
 
-            {isLogin || <NavLink
-              to="/login"
-              className={({ isActive }) =>
-                `flex items-center gap-1 text-slate-400 ${
-                  isActive && 'text-slate-50'
-                }`
-              }
-            >
-              <FaUser />
-              Sign In
-            </NavLink>}
+            {typeof userInfo === 'object' || <ItemNav to="/login"><FaUser /> Sign In</ItemNav>}
 
-            {isLogin && (
+            {typeof userInfo === 'object' && userInfo.isAdmin && (
               <>
                 <div className="relative md:self-center">
                   <button
                     className="flex items-center text-slate-400"
                     onClick={buttonNavUserHandler}
                   >
-                    Ducky <FaCaretDown />
+                    {userInfo.name} <FaCaretDown />
                   </button>
                   <ul
-                    className={`md:absolute w-full md:w-32 mt-2 bg-slate-50 py-2 border border-slate-700 rounded-lg right-0 top-8 ${
+                    className={`md:absolute z-10 w-full md:w-32 mt-2 bg-slate-50 py-2 border border-slate-700 rounded-lg right-0 top-8 ${
                       showNavUser ? 'block' : 'hidden'
                     }`}
                   >
-                    <li>
-                      <NavLink
-                        to="/profile"
-                        className="bg-slate-50 text-slate-500 block p-1 hover:bg-slate-200"
-                      >
-                        Profile
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink
-                        to="#"
-                        className="bg-slate-50 text-slate-500 block p-1 hover:bg-slate-200"
-                      >
-                        Logout
-                      </NavLink>
-                    </li>
+                    <li><ItemList to="/profile">Profile</ItemList></li>
+                    <li><ItemList to="/logout">Logout</ItemList></li>
                   </ul>
                 </div>
 
@@ -149,34 +118,13 @@ const Header = () => {
                     Admin <FaCaretDown />
                   </button>
                   <ul
-                    className={`md:absolute w-full md:w-32 mt-2 bg-slate-50 py-2 border border-slate-700 rounded-lg right-0 top-8 ${
+                    className={`md:absolute z-10 w-full md:w-32 mt-2 bg-slate-50 py-2 border border-slate-700 rounded-lg right-0 top-8 ${
                       showNavAdmin ? 'block' : 'hidden'
                     }`}
                   >
-                    <li>
-                      <NavLink
-                        to="/admin/products"
-                        className="bg-slate-50 text-slate-500 block p-1 hover:bg-slate-200"
-                      >
-                        Products
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink
-                        to="/admin/users"
-                        className="bg-slate-50 text-slate-500 block p-1 hover:bg-slate-200"
-                      >
-                        Users
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink
-                        to="/admin/orders"
-                        className="bg-slate-50 text-slate-500 block p-1 hover:bg-slate-200"
-                      >
-                        Orders
-                      </NavLink>
-                    </li>
+                    <li><ItemList to="/admin/products">Products</ItemList></li>
+                    <li><ItemList to="/admin/users">Users</ItemList></li>
+                    <li><ItemList to="/admin/orders">Orders</ItemList></li>
                   </ul>
                 </div>
               </>

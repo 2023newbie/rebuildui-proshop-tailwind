@@ -16,7 +16,6 @@ const Carousel = () => {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      console.log(i);
       i.current = i.current === 2 ? 0 : ++i.current
       setPointProd(products[i.current])
     }, 4000)
