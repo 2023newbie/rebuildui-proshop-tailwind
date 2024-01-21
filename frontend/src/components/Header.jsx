@@ -1,31 +1,12 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react'
-import { FaBars, FaShoppingCart, FaUser, FaCaretDown } from 'react-icons/fa'
+import { FaBars, FaShoppingCart } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
 import ItemNav from './UI/ItemNav'
-import ItemList from './UI/ItemList'
-import { useSelector } from 'react-redux'
+import NavUserInfo from './UI/NavUserInfo'
 
 const Header = () => {
-  const { userInfo } = useSelector(store => store.auth)
   const [isShow, setIsShow] = useState(true)
-  const [showNavUser, setShowNavUser] = useState(false)
-  const [showNavAdmin, setShowNavAdmin] = useState(false)
-
-  const buttonNavUserHandler = e => {
-    e.stopPropagation()
-    if (showNavAdmin) {
-      setShowNavAdmin(false)
-    }
-    setShowNavUser(prev => !prev)
-  }
-
-  const buttonNavAdminHandler = e => {
-    e.stopPropagation()
-    if (showNavUser) {
-      setShowNavUser(false)
-    }
-    setShowNavAdmin(prev => !prev)
-  }
 
   useEffect(() => {
     const resizeHandler = () => {
@@ -36,25 +17,14 @@ const Header = () => {
       }
     }
 
-    const mouseDownHandler = () => {
-      if (showNavUser) {
-        setShowNavUser(false)
-      }
-      if (showNavAdmin) {
-        setShowNavAdmin(false)
-      }
-    }
-
     window.addEventListener('load', resizeHandler)
     window.addEventListener('resize', resizeHandler)
-    window.addEventListener('click', mouseDownHandler)
 
     return () => {
       window.removeEventListener('load', resizeHandler)
       window.removeEventListener('resize', resizeHandler)
-      window.removeEventListener('click', mouseDownHandler)
     }
-  }, [showNavAdmin, showNavUser])
+  }, [])
 
   return (
     <nav className=" bg-slate-700">
@@ -86,49 +56,8 @@ const Header = () => {
                 Search
               </button>
             </div>
-
             <ItemNav to="/cart"><FaShoppingCart /> Cart</ItemNav>
-
-            {typeof userInfo === 'object' || <ItemNav to="/login"><FaUser /> Sign In</ItemNav>}
-
-            {typeof userInfo === 'object' && userInfo.isAdmin && (
-              <>
-                <div className="relative md:self-center">
-                  <button
-                    className="flex items-center text-slate-400"
-                    onClick={buttonNavUserHandler}
-                  >
-                    {userInfo.name} <FaCaretDown />
-                  </button>
-                  <ul
-                    className={`md:absolute z-10 w-full md:w-32 mt-2 bg-slate-50 py-2 border border-slate-700 rounded-lg right-0 top-8 ${
-                      showNavUser ? 'block' : 'hidden'
-                    }`}
-                  >
-                    <li><ItemList to="/profile">Profile</ItemList></li>
-                    <li><ItemList to="/logout">Logout</ItemList></li>
-                  </ul>
-                </div>
-
-                <div className="relative md:self-center">
-                  <button
-                    className="flex items-center text-slate-400"
-                    onClick={buttonNavAdminHandler}
-                  >
-                    Admin <FaCaretDown />
-                  </button>
-                  <ul
-                    className={`md:absolute z-10 w-full md:w-32 mt-2 bg-slate-50 py-2 border border-slate-700 rounded-lg right-0 top-8 ${
-                      showNavAdmin ? 'block' : 'hidden'
-                    }`}
-                  >
-                    <li><ItemList to="/admin/products">Products</ItemList></li>
-                    <li><ItemList to="/admin/users">Users</ItemList></li>
-                    <li><ItemList to="/admin/orders">Orders</ItemList></li>
-                  </ul>
-                </div>
-              </>
-            )}
+            <NavUserInfo />
           </div>
         )}
       </div>

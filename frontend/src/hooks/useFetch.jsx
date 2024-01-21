@@ -7,10 +7,7 @@ const useFetch = (url) => {
   useEffect(() => {
     setIsLoading(true)
     fetch(url)
-      .then(res => {
-        console.log(res)
-        return res.json()
-      })
+      .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
           setData(data)
@@ -19,7 +16,10 @@ const useFetch = (url) => {
         }
         setIsLoading(false)
       })
-      .catch(err => console.log(err))
+      .catch(err => {
+        console.log(err)
+        setIsLoading(false)
+      })
   }, [url])
 
   return [data, isLoading]
